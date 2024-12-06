@@ -1,0 +1,106 @@
+<!DOCTYPE html >
+	<html>
+		<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		</head> 
+		<!-- TinyMCE -->
+		<script src=https://cdn.jsdelivr.net/gh/Desnol/TinyMCE/tinymce/js/tinymce/jquery.tinymce.min.js></script>
+		<script src=https://cdn.jsdelivr.net/gh/Desnol/TinyMCE/tinymce/js/tinymce/tinymce.min.js></script>
+		<script>
+			tinymce.init(
+			{
+		selector: '#mytextarea',
+	plugins: [
+		    'advlist autolink lists link image charmap print preview anchor',
+		    'searchreplace visualblocks code fullscreen',
+		    'insertdatetime media table paste code help wordcount'
+ 			],
+	setup: function(editor) {
+	editor.on('init', function(e) {
+	editor.execCommand('mceFullScreen');
+	editor.on('keydown', (e) => {
+	textHTMLv2 = GetHTML();
+	})
+ 	});
+	},
+	menubar: 'file edit view insert format tools table help',
+	toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',             		 
+	image_title: true,
+	automatic_uploads: true,
+	file_picker_types: 'image',
+	file_picker_callback: function (cb, value, meta) 
+	{
+	var input = document.createElement('input');
+	input.setAttribute('type', 'file');
+	input.setAttribute('accept', 'image/*');
+	input.onchange = function () 
+  	{
+	var file = this.files[0];
+   var reader = new FileReader();
+   reader.onload = function () 
+	{
+        var id = 'blobid' + (new Date()).getTime();
+        var blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+        var base64 = reader.result.split(',')[1];
+        var blobInfo = blobCache.create(id, file, base64);
+        blobCache.add(blobInfo);
+        cb(blobInfo.blobUri(), { title: file.name });
+      };
+      reader.readAsDataURL(file);
+    };
+  input.click();
+	}
+	 });      		  
+	</script>   
+	<script>
+	function GetText(){
+ return tinymce.activeEditor.getContent({format: "text"});
+	}
+	function SetText(html){
+	return tinymce.activeEditor.setContent(html);
+	}
+	function GetHTML(){
+	return tinymce.activeEditor.getContent();
+	}
+	</script>
+	<!-- TinyMCE -->
+	<body>
+	<form method="post">
+	<textarea id="mytextarea"></textarea> 
+	</form>
+	<script>
+  	function changeColor() {
+	let btn = document.getElementById("btn-id");
+	btn.style.backgroundColor = "#4CAF50";
+	}
+	function myFunc() 
+	{
+	textHTMLv2 = GetHTML();
+   let btn = document.getElementById("btn-id");
+	btn.style.backgroundColor = 'red';
+	setTimeout(changeColor, 100);
+	} 
+	window.onload = function() { justText = GetText(); textHTMLv2 = GetHTML()}; 
+	window.addEventListener('unload', function () {
+	textHTMLv2 = GetHTML();
+	})
+	</script>
+	<style>
+	.btn-class {
+	position: absolute;
+	z-index: 999999999999;
+	right: 800px;
+	top: 3px;
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 15px;
+	cursor: pointer;
+	};
+	</style>
+	</body>
+	</html>	
